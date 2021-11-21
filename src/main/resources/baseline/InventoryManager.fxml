@@ -23,7 +23,7 @@
             <Menu mnemonicParsing="false" text="File">
                 <items>
                     <MenuItem mnemonicParsing="false" text="Save" />
-                    <MenuItem fx:id="openOption" mnemonicParsing="false" text="Open" onAction="#openFile"/>
+                    <MenuItem fx:id="openOption" mnemonicParsing="false" text="Open" onAction="#onOpen"/>
                 </items>
             </Menu>
         </menus>
@@ -128,3 +128,4 @@
         </VBox.margin>
     </HBox>
 </VBox>
+
