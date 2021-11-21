@@ -1,27 +1,50 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+class InventoryManagementApplication{
++void start(Stage stage);
++void main()launch;
+}
+Class Product{
+-String name;
+-final String serialNumber;
+-double price;
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+Product(String tName, String tSerial, double tPrice)
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
++String getName(): name
++void setName(String name)
 
-class ArrayList {
-Object[] elementData
-size()
++String getSerialNumber():serialNumber
+
++double getPrice():price
++void setPrice(double price)
+}
+Class InventoryManagementController{
+-Button addBtn
+-HBox filterArea
+-Label lblName
+-TextField nameBox
+-MenuItem openOption
+-TextField priceBox
+-Button removeAllBtn
+-Button removeBtn
+-TextField serialBox
+-TableView tableView
+-Button updateBtn
+
+void addProduct (MouseEvent event)
+
+void openFile(ActionEvent event)
++void loadData()
+
+void removeAll(ActionEvent event)
+void removeProduct(ActionEvent event)
+
+void updateProduct(ActionEvent event)
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
+
+
 
 @enduml

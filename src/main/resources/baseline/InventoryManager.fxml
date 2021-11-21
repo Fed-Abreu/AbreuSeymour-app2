@@ -16,24 +16,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- <AnchorPane xmlns="http://javafx.com/javafx" -->
-<!--             xmlns:fx="http://javafx.com/fxml" -->
-<!--             fx:controller="com.example.inventoryapp.InventoryController" -->
-<!--             prefHeight="400.0" prefWidth="600.0"> -->
-<!-- </AnchorPane> -->
-
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.InventoryManagementController">
-   <MenuBar>
-     <menus>
-       <Menu mnemonicParsing="false" text="File">
-         <items>
-           <MenuItem mnemonicParsing="false" text="Save" />
-           <MenuItem mnemonicParsing="false" text="Open" />
-         </items>
-       </Menu>
-     </menus>
-   </MenuBar>
-    <HBox id="filterArea" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <MenuBar>
+        <menus>
+            <Menu mnemonicParsing="false" text="File">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="Save" />
+                    <MenuItem fx:id="openOption" mnemonicParsing="false" text="Open" onAction="#openFile"/>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+    <HBox fx:id="filterArea" spacing="10.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
         <TextField id="searchBox" maxWidth="140" minWidth="100" />
         <Label id="lblFilter" maxWidth="90" minWidth="70" text="Search By: ">
             <padding>
@@ -62,52 +57,74 @@
                 </FXCollections>
             </items>
         </ComboBox>
-        <Button id="exportBtn" maxWidth="100" minWidth="100" text="Export Data" />
+        <Button id="exportBtn" maxWidth="109.0" minWidth="100" prefHeight="25.0" prefWidth="100.0" text="Export Data" />
     </HBox>
     <TableView fx:id="tableView" maxHeight="350">
         <columns>
-            <TableColumn maxWidth="50" minWidth="20" text="Id" />
-            <TableColumn maxWidth="200" minWidth="150" text="Serial Number" />
-            <TableColumn maxWidth="400" minWidth="200" text="Product Name" />
-            <TableColumn maxWidth="150" minWidth="100" text="Price" />
+            <TableColumn maxWidth="200" minWidth="150" text="Serial Number">
+                <cellValueFactory>
+                    <PropertyValueFactory property="serialNumber">
+                    </PropertyValueFactory>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="400" minWidth="200" text="Product Name">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name">
+                    </PropertyValueFactory>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="150" minWidth="100" text="Price">
+                <cellValueFactory>
+                    <PropertyValueFactory property="price">
+                    </PropertyValueFactory>
+                </cellValueFactory>
+            </TableColumn>
         </columns>
     </TableView>
-    <HBox id="btnArea">
-        <Button id="addBtn" maxWidth="160" minWidth="160" text="Add Item" />
-        <Button id="updateBtn" maxWidth="160" minWidth="160" text="Edit Item" />
-        <Button id="removeBtn" maxWidth="160" minWidth="160" text="Remove Item" />
-        <Button id="removeAllBtn" maxWidth="160" minWidth="160" text="Remove All Items" />
+    <HBox id="btnArea" spacing="20.0">
+        <Button fx:id="addBtn" maxWidth="160" minWidth="160" text="Add Item" onMouseClicked="#addProduct">
+            <HBox.margin>
+                <Insets left="2.0" />
+            </HBox.margin></Button>
+        <Button fx:id="updateBtn" maxWidth="160" minWidth="160" text="Edit Item" onAction="#updateProduct"/>
+        <Button fx:id="removeBtn" maxWidth="160" minWidth="160" text="Remove Item" onAction="#removeProduct" />
+        <Button fx:id="removeAllBtn" maxWidth="160" minWidth="160" text="Remove All Items" onAction="#removeAll" />
     </HBox>
-    <HBox id="lblArea">
+    <HBox id="lblArea" spacing="80.0">
         <Label id="lblProduct" maxWidth="160" minWidth="160" text=" Serial Number ">
             <font>
                 <Font name="Segoe UI Bold" size="13.0" />
             </font>
             <padding>
-                <Insets bottom="5" left="45" right="0" top="5" />
+                <Insets bottom="5.0" left="33.0" top="5.0" />
             </padding>
         </Label>
-        <Label id="lblName" maxWidth="160" minWidth="160" text=" Product Name ">
+        <Label fx:id="lblName" maxWidth="160" minWidth="160" text=" Product Name ">
             <font>
                 <Font name="Segoe UI Bold" size="13.0" />
             </font>
             <padding>
-                <Insets bottom="5" left="45" right="0" top="5" />
+                <Insets bottom="5.0" left="55.0" top="5.0" />
             </padding>
         </Label>
-        <Label id="lblPrice" maxWidth="160" minWidth="160" text=" Price (in USD) ">
+        <Label id="lblPrice" maxWidth="181.0" minWidth="160" prefHeight="27.0" prefWidth="181.0" text=" Price (in USD) ">
             <font>
                 <Font name="Segoe UI Bold" size="13.0" />
             </font>
             <padding>
-                <Insets bottom="5" left="45" right="0" top="5" />
+                <Insets bottom="5.0" left="80.0" top="5.0" />
             </padding>
         </Label>
     </HBox>
-    <HBox id="addForm">
-        <TextField id="serialBox" maxWidth="160" minWidth="160" promptText="Enter Serial Number" />
-        <TextField id="nameBox" maxWidth="160" minWidth="160" promptText="Enter Name" />
-        <TextField id="priceBox" maxWidth="160" minWidth="160" promptText="Enter Price" />
-        <Button id="clearBtn" maxWidth="80" minWidth="80" text="Clear" />
+    <HBox id="addForm" prefHeight="32.0" prefWidth="699.0" spacing="100.0">
+        <TextField fx:id="serialBox" maxWidth="160" minWidth="160" promptText="Enter Serial Number">
+            <HBox.margin>
+                <Insets />
+            </HBox.margin></TextField>
+        <TextField fx:id="nameBox" maxWidth="160" minWidth="160" promptText="Enter Name" />
+        <TextField fx:id="priceBox" maxWidth="160" minWidth="160" promptText="Enter Price" />
+        <VBox.margin>
+            <Insets left="5.0" />
+        </VBox.margin>
     </HBox>
 </VBox>
