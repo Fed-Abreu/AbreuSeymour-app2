@@ -12,18 +12,18 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.InventoryManagementController">
     <MenuBar>
         <menus>
             <Menu mnemonicParsing="false" text="File">
                 <items>
-                    <MenuItem mnemonicParsing="false" text="Save" />
-                    <MenuItem fx:id="openOption" mnemonicParsing="false" text="Open" onAction="#onOpen"/>
+                    <MenuItem fx:id="save" mnemonicParsing="false" onAction="#onSave" text="Save" />
+                    <MenuItem fx:id="openOption" mnemonicParsing="false" onAction="#onOpen" text="Open" />
                 </items>
             </Menu>
         </menus>
@@ -82,13 +82,13 @@
         </columns>
     </TableView>
     <HBox id="btnArea" spacing="20.0">
-        <Button fx:id="addBtn" maxWidth="160" minWidth="160" text="Add Item" onMouseClicked="#addProduct">
+        <Button fx:id="addBtn" maxWidth="160" minWidth="160" onMouseClicked="#addProduct" text="Add Item">
             <HBox.margin>
                 <Insets left="2.0" />
             </HBox.margin></Button>
-        <Button fx:id="updateBtn" maxWidth="160" minWidth="160" text="Edit Item" onAction="#updateProduct"/>
-        <Button fx:id="removeBtn" maxWidth="160" minWidth="160" text="Remove Item" onAction="#removeProduct" />
-        <Button fx:id="removeAllBtn" maxWidth="160" minWidth="160" text="Remove All Items" onAction="#removeAll" />
+        <Button fx:id="updateBtn" maxWidth="160" minWidth="160" onAction="#updateProduct" text="Edit Item" />
+        <Button fx:id="removeBtn" maxWidth="160" minWidth="160" onAction="#removeProduct" text="Remove Item" />
+        <Button fx:id="removeAllBtn" maxWidth="160" minWidth="160" onAction="#removeAll" text="Remove All Items" />
     </HBox>
     <HBox id="lblArea" spacing="80.0">
         <Label id="lblProduct" maxWidth="160" minWidth="160" text=" Serial Number ">
@@ -128,4 +128,3 @@
         </VBox.margin>
     </HBox>
 </VBox>
-
