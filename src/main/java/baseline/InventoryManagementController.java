@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -55,19 +56,32 @@ public class InventoryManagementController {
     @FXML
     private Button updateBtn;
 
+    @FXML
+    private ComboBox combo;
+
+    @FXML
+    public TextField searchBox;
+
+    @FXML
+    public ComboBox formatCombo;
+
+
     FileChooser fileChooser;
 
     //Make an Observable list tabledata = to collecntions and Initialize
     private final ObservableList<Product> tableData = FXCollections.observableArrayList();
 
-
-    public void initialize(URL location, ResourceBundle resources) {
-        fileChooser.setInitialDirectory(new File("C:"));
-    }
-
-
     @FXML
     void addProduct(MouseEvent event) {
+        //unique serial number
+        for (Product tableDatum : tableData) {
+            if (tableDatum.getSerialNumber().matches(serialBox.getText())) {
+                Alert productAlert = new Alert(Alert.AlertType.ERROR, "Serial number must " +
+                        "unique! Please try again.");
+                productAlert.show();
+                return;
+            }
+        }
         //if serialNumber is not valid format
         if(!serialBox.getText().matches("^[a-zA-Z][-][0-9a-zA-Z]{3}[-][a-zA-Z0-9]{3}[-][a-zA-Z0-9]{3}$"))
         {
@@ -169,7 +183,7 @@ public class InventoryManagementController {
     @FXML
     void removeProduct(ActionEvent event) {
         //Get selected product
-        Product product = (Product) tableView.getSelectionModel().getSelectedItem();
+        Product product = tableView.getSelectionModel().getSelectedItem();
         //data.remove product
         tableData.remove(product);
         //Set items of tableview to data
@@ -179,6 +193,14 @@ public class InventoryManagementController {
 
     @FXML
     void updateProduct(ActionEvent actionEvent) {
+        Product product =(Product) tableView.getSelectionModel().getSelectedItem();
+
+        //If a selection wasnt made display error message
+        if(tableView.getSelectionModel().getSelectedItem() == null) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Please select a record!");
+            error.show();
+            return;
+        }
         //Create a new stage
         Stage updatePrompt = new Stage();
         VBox vbox = new VBox();
@@ -202,6 +224,10 @@ public class InventoryManagementController {
             {
                 Double price= Double.parseDouble(txtBox.getText());
                 updatePrompt.close();
+                tableData.remove(product);
+                product.setPrice(price);
+                tableData.add(product);
+                tableView.setItems(tableData);
 
             }
 
@@ -216,43 +242,120 @@ public class InventoryManagementController {
         updatePrompt.show();
 
     }
+    public void searchProduct(KeyEvent actionEvent) {
 
+        ObservableList<Product> list = FXCollections.observableArrayList();
+        //If no search was activated Display error message
+        if(combo.getValue()==null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a search criteria!");
+            alert.show();
+        }
+        //Else loop through table name if matches search box
+        else if(combo.getValue().toString().matches("Name")  && searchBox.getText().length()>1) {
+            for(int cnt=0;cnt<tableData.size();cnt++) {
+                if(tableData.get(cnt).getName().toLowerCase().contains(searchBox.getText().toLowerCase())) {
+                    list.add(tableData.get(cnt));
+                }
+            }
+            //Show Items
+            tableView.setItems(list);
+        }
+            //Else loop through table serial Numbers if matches search box
+        else if(combo.getValue().toString().matches("Serial Number") && searchBox.getText().length()>1) {
+            for(int cnt=0;cnt<tableData.size();cnt++) {
+                if(tableData.get(cnt).getSerialNumber().toLowerCase().contains(searchBox.getText().toLowerCase())) {
+                    list.add(tableData.get(cnt));
+                }
+            }
+            //Show Items
+            tableView.setItems(list);
+        }
+        //else show Items
+        else {
+            tableView.setItems(tableData);
+        }
 
-
+    }
 
     @FXML
-    public void onSave(ActionEvent actionEvent) {
+    public void onSave(ActionEvent actionEvent) throws IOException {
 
-        FileChooser fileChooser = new FileChooser();
-        //Set title
-        fileChooser.setTitle("Save Dialog");
-        //Show different save file types
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("text file", "*.txt"),
-                new FileChooser.ExtensionFilter("HTML", "*.html"), new FileChooser.ExtensionFilter("JSON", "*.json"),
-                new FileChooser.ExtensionFilter("tab-separated value", "*.tsv"));
-        //Display window
-        File file = fileChooser.showSaveDialog(filterArea.getScene().getWindow());
-        if (file != null) {
-            try {
+        String inputFile = "";
+        FileWriter fileWriter = new FileWriter(inputFile);
 
-                fileChooser.setInitialDirectory(file.getParentFile());
+        //Loop through table
+        for(int cnt=0;cnt<tableData.size();cnt++) {
 
-                //Print file out
-                PrintWriter printWriter = new PrintWriter(file);
-                for(Product p :tableData) {
-                    printWriter.write(p.getSerialNumber());
-                    printWriter.write(p.getName() + '\n');
-                    printWriter.write(String.valueOf(p.getPrice() + '\n'));
+            //for each loop write data down to file
+            Product product = tableData.get(cnt);
+            fileWriter.write(product.getSerialNumber() + "\t" + product.getName() + "\t" + product.getPrice() + "\n");
+        }
+        fileWriter.close();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Records saved successfully!");
+        alert.show();
+
+        }
+    public void exportFile(ActionEvent actionEvent) throws IOException {
+        //If file type isnt select Display error message
+        if(formatCombo.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a file format!");
+            alert.show();
+        }
+        //else Open Window
+        else {
+            FileChooser fileOpener = new FileChooser();
+            //Set Title
+            fileOpener.setTitle("Select Database File");
+            File file = fileOpener.showOpenDialog(filterArea.getScene().getWindow());
+
+            String fileName = file.getName();
+            //get file type
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, file.getName().length());
+            //if .txt write file looping through the file
+            if(fileExtension.matches("txt")) {
+                FileWriter objWriter = new FileWriter(file.getAbsolutePath());
+
+                //write file data to table
+                for (Product product : tableData) {
+                    objWriter.write(product.getSerialNumber() + "\t" + product.getName() + "\t" + product.getPrice() + "\n");
+                }
+                objWriter.close();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "File exported successfully!");
+                alert.show();
+            }
+            //else if file type is html
+            else if(fileExtension.matches("html")) {
+                //Parse code with html template tags
+                String template = "<html><head><title>Inventory Manager Database</title></head><body>$body</body></html>";
+                //table data Serial number, name, and price using th
+                StringBuilder dataTable= new StringBuilder("<table><tr><th>Serial Number</th><th>Product Name</th><th>Price</th></tr>");
+
+                for (Product product : tableData) {
+                    dataTable.append("<tr><td>").append(product.getSerialNumber()).append("</td><td>").append(product.getName()).append("</td><td>").append(product.getPrice()).append("</td></tr>");
 
                 }
-                printWriter.close();
+                dataTable.append("</table>");
+                //replace template with data
+                template = template.replace("$body", dataTable.toString());
+                //write down data to file
+                FileWriter objWriter = new FileWriter(file.getAbsolutePath());
+                objWriter.write(template);
+                objWriter.close();
 
-                //Catch exceptions
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "File exported successfully!");
+                alert.show();
+
+            }
+            else {
+                //else file is not valid Display error message
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid file type!");
+                alert.show();
             }
         }
 
     }
+
+
 }
 

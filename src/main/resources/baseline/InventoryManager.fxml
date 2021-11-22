@@ -22,20 +22,20 @@
         <menus>
             <Menu mnemonicParsing="false" text="File">
                 <items>
-                    <MenuItem fx:id="save" mnemonicParsing="false" onAction="#onSave" text="Save" />
-                    <MenuItem fx:id="openOption" mnemonicParsing="false" onAction="#onOpen" text="Open" />
+                    <MenuItem mnemonicParsing="false" text="Save" onAction="#onSave"/>
+                    <MenuItem fx:id="openOption" mnemonicParsing="false" text="Open" onAction="#onOpen"/>
                 </items>
             </Menu>
         </menus>
     </MenuBar>
     <HBox fx:id="filterArea" spacing="10.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-        <TextField id="searchBox" maxWidth="140" minWidth="100" />
+        <TextField fx:id="searchBox" maxWidth="140" minWidth="100" onKeyTyped="#searchProduct"/>
         <Label id="lblFilter" maxWidth="90" minWidth="70" text="Search By: ">
             <padding>
                 <Insets bottom="0" left="10" right="0" top="5" />
             </padding>
         </Label>
-        <ComboBox id="combo" maxWidth="120" minWidth="120">
+        <ComboBox fx:id="combo" maxWidth="120" minWidth="120">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="Serial Number" />
@@ -48,7 +48,7 @@
                 <Insets bottom="0" left="10" right="0" top="5" />
             </padding>
         </Label>
-        <ComboBox id="formatCombo" maxWidth="150" minWidth="150">
+        <ComboBox fx:id="formatCombo" maxWidth="150" minWidth="150">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="HTML" />
@@ -57,7 +57,7 @@
                 </FXCollections>
             </items>
         </ComboBox>
-        <Button id="exportBtn" maxWidth="109.0" minWidth="100" prefHeight="25.0" prefWidth="100.0" text="Export Data" />
+        <Button fx:id="exportBtn" maxWidth="109.0" minWidth="100" prefHeight="25.0" prefWidth="100.0" text="Export Data" onAction="#exportFile"/>
     </HBox>
     <TableView fx:id="tableView" maxHeight="350">
         <columns>
@@ -82,13 +82,13 @@
         </columns>
     </TableView>
     <HBox id="btnArea" spacing="20.0">
-        <Button fx:id="addBtn" maxWidth="160" minWidth="160" onMouseClicked="#addProduct" text="Add Item">
+        <Button fx:id="addBtn" maxWidth="160" minWidth="160" text="Add Item" onMouseClicked="#addProduct">
             <HBox.margin>
                 <Insets left="2.0" />
             </HBox.margin></Button>
-        <Button fx:id="updateBtn" maxWidth="160" minWidth="160" onAction="#updateProduct" text="Edit Item" />
-        <Button fx:id="removeBtn" maxWidth="160" minWidth="160" onAction="#removeProduct" text="Remove Item" />
-        <Button fx:id="removeAllBtn" maxWidth="160" minWidth="160" onAction="#removeAll" text="Remove All Items" />
+        <Button fx:id="updateBtn" maxWidth="160" minWidth="160" text="Edit Item" onAction="#updateProduct"/>
+        <Button fx:id="removeBtn" maxWidth="160" minWidth="160" text="Remove Item" onAction="#removeProduct" />
+        <Button fx:id="removeAllBtn" maxWidth="160" minWidth="160" text="Remove All Items" onAction="#removeAll" />
     </HBox>
     <HBox id="lblArea" spacing="80.0">
         <Label id="lblProduct" maxWidth="160" minWidth="160" text=" Serial Number ">
