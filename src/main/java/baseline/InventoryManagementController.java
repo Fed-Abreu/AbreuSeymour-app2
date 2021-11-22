@@ -68,10 +68,10 @@ public class InventoryManagementController {
 
     @FXML
     void addProduct(MouseEvent event) {
-        //if serialNumber is empty
-        if (serialBox.getText().matches("")) {
-            //Display error message
-            Alert productAlert = new Alert(Alert.AlertType.ERROR, "Serial Number cannot be empty!");
+        //if serialNumber is not valid format
+        if(!serialBox.getText().matches("^[a-zA-Z][-][0-9a-zA-Z]{3}[-][a-zA-Z0-9]{3}[-][a-zA-Z0-9]{3}$"))
+        {
+            Alert productAlert = new Alert(Alert.AlertType.ERROR, "Serial number must be A-XXX-XXX-XXX format where X is a digit or alphabet!");
             productAlert.show();
         }
 
@@ -186,15 +186,39 @@ public class InventoryManagementController {
         Label lblUpdate = new Label("Product Price: ");
         TextField txtBox = new TextField();
         Button saveBtn = new Button("Save");
-        saveBtn.setOnMouseClicked(event -> {
+        saveBtn.setOnMouseClicked(event->{
+            System.out.println(txtBox.getText().matches("^[0-9.]*$"));
+            if(!txtBox.getText().matches("^[0-9.]*$"))
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid price! Please try again.");
+                alert.show();
+            }
+            else if(Double.parseDouble(txtBox.getText()) <= 0)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Price must be greater than 0.");
+                alert.show();
+            }
+            else
+            {
+                Double price= Double.parseDouble(txtBox.getText());
+                updatePrompt.close();
+
+            }
+
         });
-        //Add elements to box
+
+        //Add elements to the box
         vbox.getChildren().addAll(lblUpdate, txtBox, saveBtn);
-        //create prompt
+
+        //Create prompt
         Scene updateScene = new Scene(vbox);
         updatePrompt.setScene(updateScene);
         updatePrompt.show();
+
     }
+
+
+
 
     @FXML
     public void onSave(ActionEvent actionEvent) {
@@ -202,17 +226,18 @@ public class InventoryManagementController {
         FileChooser fileChooser = new FileChooser();
         //Set title
         fileChooser.setTitle("Save Dialog");
-        //Open Dialog window
-
+        //Show different save file types
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("text file", "*.txt"),
                 new FileChooser.ExtensionFilter("HTML", "*.html"), new FileChooser.ExtensionFilter("JSON", "*.json"),
                 new FileChooser.ExtensionFilter("tab-separated value", "*.tsv"));
+        //Display window
         File file = fileChooser.showSaveDialog(filterArea.getScene().getWindow());
         if (file != null) {
             try {
 
                 fileChooser.setInitialDirectory(file.getParentFile());
 
+                //Print file out
                 PrintWriter printWriter = new PrintWriter(file);
                 for(Product p :tableData) {
                     printWriter.write(p.getSerialNumber());
@@ -222,8 +247,7 @@ public class InventoryManagementController {
                 }
                 printWriter.close();
 
-
-
+                //Catch exceptions
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
